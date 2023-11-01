@@ -2,10 +2,7 @@ package me.dyaika.marketplace.controllers;
 
 import me.dyaika.marketplace.entities.Book;
 import me.dyaika.marketplace.repositories.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -30,7 +27,7 @@ public class BookController {
 
     @PutMapping
     public void updateBook(@RequestBody Book book){
-        repository.editBook(book);
+        repository.updateBook(book);
     }
 
     @DeleteMapping

@@ -31,11 +31,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-jar {
-	manifest {
-		attributes(
-				'Main-Class': 'me/dyaika/marketplace/MarketplaceApplication' // Путь к вашему главному классу
-		)
-	}
+bootJar {
+	mainClass = 'me/dyaika/marketplace/MarketplaceApplication'
+	archiveFileName = 'app.jar'
 }
-

@@ -1,6 +1,6 @@
 package me.dyaika.marketplace.repositories;
 
-import me.dyaika.marketplace.entities.Book;
+import me.dyaika.marketplace.entities.WashingMachine;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -10,62 +10,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class BookRepository {
-
+public class WashingMachineRepository {
 
     private final NamedParameterJdbcTemplate template;
 
 
-    public BookRepository(NamedParameterJdbcTemplate template) {
+    public WashingMachineRepository(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
-    public Long createBook(Book book){
-        String sql = "INSERT INTO book (author, sellernumber, type, price, title) VALUES (:author, :sellernumber, :type, :price, :title) RETURNING ID";
+
+    public Long createWashingMachine(WashingMachine book) {
+        String sql = "INSERT INTO washing_machine (vendor, sellernumber, type, price, title, volume) VALUES (:vendor, :sellernumber, :type, :price, :title, :volume) RETURNING ID";
         Map<String, Object> map = new HashMap<>();
-        map.put("author", book.getAuthor());
+        map.put("vendor", book.getVendor());
         map.put("sellernumber", book.getSellernumber());
         map.put("type", book.getType());
         map.put("price", book.getPrice());
         map.put("title", book.getTitle());
-
-        System.out.println(book.getAuthor());
-        System.out.println(book.getSellernumber());
-        System.out.println(book.getType());
-        System.out.println(book.getPrice());
-        System.out.println(book.getTitle());
+        map.put("volume", book.getVolume());
 
         return template.queryForObject(sql, map, Long.class);
     }
 
-    public Book getBook(Long id){
-        String sql = "SELECT * FROM book WHERE book.id = :id";
+    public WashingMachine getWashingMachine(Long id) {
+        String sql = "SELECT * FROM washing_machine WHERE washing_machine.id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
         return template.queryForObject(sql, parameterSource, (rs, rowNum) -> {
-            Book book = new Book();
+            WashingMachine book = new WashingMachine();
             book.setId(rs.getLong("id"));
-            book.setAuthor(rs.getString("author"));
-            book.setTitle(rs.getString("title"));
-            book.setType(rs.getString("type"));
+            book.setVendor(rs.getString("vendor"));
             book.setSellernumber(rs.getString("sellernumber"));
+            book.setType(rs.getString("type"));
             book.setPrice(rs.getDouble("price"));
+            book.setTitle(rs.getString("title"));
+            book.setVolume(rs.getInt("volume"));
             return book;
         });
     }
 
-    public void updateBook(Book book){
-        String sql = "UPDATE book SET author = :author, sellernumber = :sellernumber, type = :type, price = :price, title = :title WHERE id = :id";
+    public void updateWashingMachine(WashingMachine book) {
+        String sql = "UPDATE washing_machine SET vendor = :vendor, sellernumber = :sellernumber, type = :type, price = :price, title = :title, volume = :volume WHERE id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", book.getId())
-                .addValue("author", book.getAuthor())
+                .addValue("vendor", book.getVendor())
                 .addValue("sellernumber", book.getSellernumber())
                 .addValue("title", book.getTitle())
                 .addValue("type", book.getType())
-                .addValue("price", book.getPrice());
+                .addValue("price", book.getPrice())
+                .addValue("battery", book.getVolume());
         template.update(sql, parameterSource);
     }
 
-    public void deleteBook(long id){
-        String sql = "DELETE FROM book WHERE id = :id";
+    public void deleteWashingMachine(long id) {
+        String sql = "DELETE FROM washing_machine WHERE id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
         template.update(sql, parameterSource);
     }
