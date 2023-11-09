@@ -9,7 +9,7 @@ group = 'me.dyaika'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '18'
+	sourceCompatibility = '17'
 }
 
 configurations {
@@ -23,24 +23,10 @@ repositories {
 }
 
 dependencies {
-	implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-bootJar {
-	mainClass = 'me/dyaika/marketplace/MarketplaceApplication'
-	archiveFileName = 'app.jar'
-}
-
-jar {
-	manifest {
-		attributes(
-				'Main-Class': 'me.dyaika.marketplace.MarketplaceApplication'
-		)
-	}
 }

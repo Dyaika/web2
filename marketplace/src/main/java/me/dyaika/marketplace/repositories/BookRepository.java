@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class BookRepository {
+public class    BookRepository {
 
 
     private final NamedParameterJdbcTemplate template;
