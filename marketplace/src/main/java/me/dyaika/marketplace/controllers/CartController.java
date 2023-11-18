@@ -1,5 +1,7 @@
 package me.dyaika.marketplace.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import me.dyaika.marketplace.entities.Book;
 import me.dyaika.marketplace.entities.CartItem;
 import me.dyaika.marketplace.repositories.CartRepository;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(tags = "Cart", description = "User's cart")
 @RestController
 @RequestMapping("/cart")
 public class CartController {
@@ -22,6 +25,7 @@ public class CartController {
         return repository.addToCart(clientId, itemId);
     }
 
+    @ApiOperation("Cart content")
     @GetMapping("/{clientId}")
     public List<CartItem> getCart(@PathVariable Long clientId){
         return repository.getCart(clientId);
