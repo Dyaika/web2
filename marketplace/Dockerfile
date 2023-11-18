@@ -12,6 +12,8 @@ RUN gradle clean
 # Собираем приложение с помощью Gradle, исключая выполнение тестов
 RUN gradle build -x test
 
+RUN gradle bootJar
+
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=builder /app/build/libs/app.jar ./app.jar
