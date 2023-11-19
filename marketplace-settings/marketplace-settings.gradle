@@ -1,0 +1,2 @@
+include("marketplace", "common")
+rootProject.name = 'web2'

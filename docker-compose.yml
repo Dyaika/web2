@@ -1,24 +1,50 @@
-version: '1.0'
+services:
+  db:
+    image: 'postgres:15.2'
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_DB: database
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
-services:   
-    db:
-        container_name: db
-        image: postgres:latest
-        restart: always
-        environment:
-            POSTGRES_DB: marketplaceDB
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: password
-        volumes:
-            - ./db:/docker-entrypoint-initdb.d
-        ports:
-            - "5432:5432"
-            
-    app:
-        depends_on:
-           - db
-        build:
-            context: ./marketplace
-            dockerfile: Dockerfile
-        ports:
-           - "80:8000"
+  redis:
+    image: "redis:latest"
+
+  auth:
+    build: auth
+    depends_on:
+      - db
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/database
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_REDIS_HOST: redis
+
+  app:
+    build:
+      context: ./marketplace
+      dockerfile: fastDockerfile
+    depends_on:
+      - auth
+    ports:
+      - '8080:80'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/database
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_REDIS_HOST: redis
+
+  site:
+    build: ./nginx
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/files:/site
+
+volumes:
+  postgres-data:
