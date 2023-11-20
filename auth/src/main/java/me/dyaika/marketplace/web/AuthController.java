@@ -2,13 +2,13 @@ package me.dyaika.marketplace.web;
 
 import com.google.gson.Gson;
 import me.dyaika.marketplace.db.redis.RedisSaver;
+import me.dyaika.marketplace.db.repositories.ClientRepository;
 import me.dyaika.marketplace.services.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import me.dyaika.marketplace.db.redis.TokenInformation;
-import me.dyaika.marketplace.db.repository.UserRepository;
 import me.dyaika.marketplace.db.model.User;
 
 import java.util.Objects;
@@ -17,19 +17,19 @@ import java.util.Objects;
 @RequestMapping("/auth")
 public class AuthController {
 	private final JwtTokenProvider jwtTokenProvider;
-	private final UserRepository userRepository;
+	private final ClientRepository clientRepository;
 	private final RedisSaver redisSaver;
 
 	@Autowired
-	public AuthController(JwtTokenProvider jwtTokenProvider, UserRepository userRepository, RedisSaver redisSaver) {
+	public AuthController(JwtTokenProvider jwtTokenProvider, ClientRepository clientRepository, RedisSaver redisSaver) {
 		this.jwtTokenProvider = jwtTokenProvider;
-		this.userRepository = userRepository;
+		this.clientRepository = clientRepository;
 		this.redisSaver = redisSaver;
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-		User user = userRepository.findByLogin(username).orElse(null);
+		User user = clientRepository.findByLogin(username);
 		if (user == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 		}
@@ -45,7 +45,7 @@ public class AuthController {
 	public ResponseEntity<?> validate(@RequestHeader("Authorization") String authorizationHeader) {
 		if (jwtTokenProvider.validateToken(extractToken(authorizationHeader))) {
 			Long id = jwtTokenProvider.getUserIdFromToken(extractToken(authorizationHeader));
-			User user = userRepository.findById(id).orElse(null);
+			User user = clientRepository.getClientById(id);
 			if (user == null) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 			}

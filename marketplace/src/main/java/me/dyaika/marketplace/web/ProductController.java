@@ -1,16 +1,13 @@
 package me.dyaika.marketplace.web;
 
+import me.dyaika.marketplace.db.repository.*;
 import me.dyaika.marketplace.web.filters.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import me.dyaika.marketplace.db.model.UserRole;
-import me.dyaika.marketplace.db.repository.BookRepository;
-import me.dyaika.marketplace.db.repository.ProductRepository;
-import me.dyaika.marketplace.db.repository.TelephoneRepository;
 import me.dyaika.marketplace.db.model.Book;
 import me.dyaika.marketplace.db.model.Product;
 import me.dyaika.marketplace.db.model.Telephone;
-import me.dyaika.marketplace.db.repository.UserRepository;
 
 import java.util.List;
 
@@ -18,18 +15,18 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-	private final UserRepository userRepository;
 	private final ProductRepository<Product> productRepository;
 	private final BookRepository bookRepository;
 	private final TelephoneRepository telephoneRepository;
+	private final ItemsRepository itemsRepository;
 
 	@Autowired
-	public ProductController(ProductRepository<Product> productRepository,BookRepository bookRepository,
-							 TelephoneRepository telephoneRepository, UserRepository userRepository) {
+	public ProductController(ProductRepository<Product> productRepository, BookRepository bookRepository,
+							 TelephoneRepository telephoneRepository, ItemsRepository itemsRepository) {
 		this.productRepository = productRepository;
 		this.bookRepository = bookRepository;
 		this.telephoneRepository = telephoneRepository;
-		this.userRepository = userRepository;
+		this.itemsRepository = itemsRepository;
 	}
 
 	@GetMapping("/all")
@@ -58,7 +55,7 @@ public class ProductController {
 
 	@GetMapping("/books/{id}")
 	public Book getBookById(@PathVariable Long id) {
-		return bookRepository.findById(id).orElse(null);
+		return itemsRepository.getBook(id);
 	}
 
 	@GetMapping("/telephones/{id}")

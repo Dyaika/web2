@@ -1,5 +1,6 @@
 package me.dyaika.marketplace.web;
 
+import me.dyaika.marketplace.db.repositories.ClientRepository;
 import me.dyaika.marketplace.web.filters.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import me.dyaika.marketplace.db.model.UserRole;
 import me.dyaika.marketplace.db.redis.RedisLoader;
-import me.dyaika.marketplace.db.repository.UserRepository;
 import me.dyaika.marketplace.db.model.User;
 
 import java.util.List;
@@ -17,31 +17,29 @@ import java.util.Objects;
 @RequestMapping("/api/clients")
 public class ClientController {
 
-	private final UserRepository userRepository;
+	private final ClientRepository clientRepository;
 	private final RedisLoader redisLoader;
 
 	@Autowired
-	public ClientController(UserRepository userRepository, RedisLoader redisLoader) {
-		this.userRepository = userRepository;
+	public ClientController(ClientRepository clientRepository, RedisLoader redisLoader) {
+		this.clientRepository = clientRepository;
 		this.redisLoader = redisLoader;
 	}
 
 	@GetMapping("")
 	public List<User> getAllClients() {
-		return userRepository.findAll();
+		return clientRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
 	public User getClientById(@PathVariable Long id) {
-		return userRepository.findById(id).orElse(null);
+		return clientRepository.getClientById(id);
 	}
 
 	@PostMapping("")
 	public User createClient(@RequestBody User user) {
-		if (userRepository.findByLogin(user.getLogin()).isEmpty()) {
-			return userRepository.save(user);
-		}
-		return null;
+		clientRepository.createClient(user);
+		return clientRepository.findByLogin(user.getLogin());
 	}
 
 	@PutMapping("/{id}")
@@ -49,17 +47,15 @@ public class ClientController {
 		if (!Objects.equals(userId, id)) {
 			return null;
 		}
-		if (userRepository.existsById(id)) {
-			user.setId(id);
-			return userRepository.save(user);
-		}
-		return null;
+		user.setId(id);
+		clientRepository.updateClient(user);
+		return clientRepository.getClientById(id);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteClient(@PathVariable Long id, @RequestAttribute("user") Long userId) {
 		if (Objects.equals(userId, id)) {
-			userRepository.deleteById(id);
+			clientRepository.deleteClient(id);
 			return ResponseEntity.ok("");
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("");
@@ -72,9 +68,9 @@ public class ClientController {
 		if (!Objects.equals(userId, id)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user");
 		}
-		User user = userRepository.getReferenceById(id);
+		User user = clientRepository.getClientById(id);
 		user.setRole(UserRole.SELLER);
-		userRepository.save(user);
+		clientRepository.updateClient(user);
 		redisLoader.deleteTokenInformation(Authorization.replace("Bearer ", ""));
 		return ResponseEntity.ok("");
 	}
@@ -86,9 +82,9 @@ public class ClientController {
 		if (!Objects.equals(userId, id)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user");
 		}
-		User user = userRepository.getReferenceById(id);
+		User user = clientRepository.getClientById(id);
 		user.setRole(UserRole.CLIENT);
-		userRepository.save(user);
+		clientRepository.updateClient(user);
 		redisLoader.deleteTokenInformation(Authorization.replace("Bearer ", ""));
 		return ResponseEntity.ok("");
 	}
@@ -100,9 +96,9 @@ public class ClientController {
 		if (!Objects.equals(userId, id)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user");
 		}
-		User user = userRepository.getReferenceById(id);
+		User user = clientRepository.getClientById(id);
 		user.setRole(UserRole.ADMIN);
-		userRepository.save(user);
+		clientRepository.updateClient(user);
 		redisLoader.deleteTokenInformation(Authorization.replace("Bearer ", ""));
 		return ResponseEntity.ok("");
 	}

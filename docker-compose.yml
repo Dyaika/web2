@@ -7,7 +7,7 @@ services:
       POSTGRES_DB: database
       POSTGRES_PASSWORD: password
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
 
   redis:
     image: "redis:latest"

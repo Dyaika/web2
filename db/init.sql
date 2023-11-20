@@ -52,12 +52,13 @@ CREATE TABLE client(
     login       TEXT    NOT NULL,
     password    TEXT    NOT NULL,
     name        TEXT    NOT NULL,
-    email       TEXT    NOT NULL
+    email       TEXT    NOT NULL,
+	role		TEXT	NOT NULL
 );
 
-INSERT INTO client (login, password, name, email) VALUES 
-('Dyaika', '123456', 'Sasha', 'abc@abc.com'),
-('DoofHD', '789012', 'Edward', 'abd@abd.com');
+INSERT INTO client (login, password, name, email, role) VALUES 
+('Dyaika', '1234', 'Sasha', 'abc@abc.com', 'ADMIN'),
+('DoofHD', '5678', 'Edward', 'abd@abd.com', 'CLIENT');
 
 CREATE TABLE stock(
 	id             BIGINT   PRIMARY KEY,
