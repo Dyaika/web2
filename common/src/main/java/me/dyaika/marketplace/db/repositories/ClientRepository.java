@@ -26,7 +26,7 @@ public class ClientRepository {
         map.put("password", user.getPassword());
         map.put("name", user.getName());
         map.put("email", user.getEmail());
-        map.put("role", user.getRole());
+        map.put("role", user.getRole().toString());
 
         return template.queryForObject(sql, map, Long.class);
     }
@@ -86,7 +86,7 @@ public class ClientRepository {
                 .addValue("password", user.getPassword())
                 .addValue("name", user.getName())
                 .addValue("email", user.getEmail())
-                .addValue("role", user.getRole());
+                .addValue("role", user.getRole().toString());
         template.update(sql, parameterSource);
     }
 

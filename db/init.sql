@@ -2,18 +2,18 @@ create table item
 (
 	id             BIGSERIAL   PRIMARY KEY,
     price          INTEGER     NOT NULL,
-    sellernumber  TEXT   NOT NULL,
+    sellernumber   BIGINT   NOT NULL,
     type           TEXT        NOT NULL,
     title          TEXT        NOT NULL
 );
 
 INSERT INTO item (price, sellernumber, type, title) VALUES 
-(1000, '123456', 'book', 'Normalise'),
-(1500, '789012', 'book', 'Dont care'),
-(100000, '123456', 'telephone', 'Samsung 2'),
-(15000, '789012', 'telephone', 'Huawei 5'),
-(10000, '123456', 'washmachine', 'moidodyr'),
-(15000, '789012', 'washmachine', 'vanessh');
+(1000, 1, 'book', 'Normalise'),
+(1500, 1, 'book', 'Dont care'),
+(100000, 1, 'telephone', 'Samsung 2'),
+(15000, 1, 'telephone', 'Huawei 5'),
+(10000, 1, 'washmachine', 'moidodyr'),
+(15000, 1, 'washmachine', 'vanessh');
 
 CREATE TABLE book(
 	id             BIGINT   PRIMARY KEY,

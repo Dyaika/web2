@@ -64,7 +64,7 @@ public class AuthController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized");
 			}
 		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There are no token");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no token provided");
 	}
 
 	private String extractToken(String authorizationHeader) {
